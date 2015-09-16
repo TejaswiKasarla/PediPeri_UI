@@ -50,6 +50,10 @@ void PediPeri::on_pushButton_2_clicked()
 
 void PediPeri::cleartext()
 {
-
+    this->ui->lineEdit->clear();
+    this->ui->lineEdit_2->clear();
+    this->ui->lineEdit_3->clear();
+    this->ui->textEdit->clear();
+    this->ui->comboBox->clear();
 }
 

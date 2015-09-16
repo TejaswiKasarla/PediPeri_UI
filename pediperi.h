@@ -24,7 +24,7 @@ private:
     Ui::PediPeri *ui;
     void writefile();
     void cleartext();
-    void closeEvent();
+
 };
 
 #endif // PEDIPERI_H
