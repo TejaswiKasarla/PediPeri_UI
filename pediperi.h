@@ -2,9 +2,11 @@
 #define PEDIPERI_H
 
 #include <QMainWindow>
+#include "mywindow.h"
 
 namespace Ui {
 class PediPeri;
+class Interface;
 }
 
 class PediPeri : public QMainWindow
@@ -22,6 +24,7 @@ private slots:
 
 private:
     Ui::PediPeri *ui;
+    MyWindow *mw;
     void writefile();
     void cleartext();
 

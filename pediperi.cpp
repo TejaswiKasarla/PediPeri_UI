@@ -3,6 +3,8 @@
 #include "QFile"
 #include "QString"
 #include "QTextStream"
+#include "mywindow.h"
+
 
 PediPeri::PediPeri(QWidget *parent) :
     QMainWindow(parent),
@@ -19,6 +21,10 @@ PediPeri::~PediPeri()
 void PediPeri::on_pushButton_4_clicked()
 {
     writefile();
+    mw = new MyWindow(this);
+    mw->show();
+
+
 }
 void PediPeri::writefile()
 {
@@ -37,10 +43,7 @@ void PediPeri::writefile()
     //out<<"Gender: "<<Gender<<endl;
     out<<"Description of Patient: "<<Description<<endl;
     file.close();
-    system ("start C:/Users/TSMS/Documents/PediPeri_Test/bin/Debug/PediPeri_Test.exe");
     PediPeri::close();
-
-
 }
 
 void PediPeri::on_pushButton_2_clicked()
