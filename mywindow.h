@@ -2,6 +2,9 @@
 #define MYWINDOW_H
 
 #include <QMainWindow>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+#include <QtSerialPort/QSerialPort>
 
 namespace Ui {
 class MyWindow;
@@ -15,8 +18,31 @@ public:
     explicit MyWindow(QWidget *parent = 0);
     ~MyWindow();
 
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+public slots:
+void capt();
+void blinkLED(QString);
+
+
 private:
     Ui::MyWindow *ui;
+    cv::VideoCapture capWebcam;
+    cv::Mat frame;
+    QSerialPort *arduino;
+    QImage qimg;
+
+    QTimer* tmrTimer;
+
+    static const quint16 arduino_uno_vendor_id = 9025;
+    static const quint16 arduino_uno_product_id = 67;
+    QString arduino_port_name;
+    bool arduino_is_available;
 };
+
 
 #endif // MYWINDOW_H
