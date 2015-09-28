@@ -24,9 +24,20 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
+
+    void on_pushButton_7_clicked();
+
 public slots:
 void capt();
-void blinkLED(QString);
+
+
 
 
 private:
@@ -39,7 +50,7 @@ private:
     QTimer* tmrTimer;
 
     static const quint16 arduino_uno_vendor_id = 9025;
-    static const quint16 arduino_uno_product_id = 67;
+    static const quint16 arduino_uno_product_id = 66;
     QString arduino_port_name;
     bool arduino_is_available;
 };

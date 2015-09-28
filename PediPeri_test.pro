@@ -29,4 +29,7 @@ LIBS += -llibopencv_calib3d2411 -llibopencv_contrib2411 -llibopencv_core2411 -ll
 
 QT += serialport
 
+RESOURCES += \
+    resource.qrc
+
 

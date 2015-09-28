@@ -128,15 +128,95 @@ void MyWindow::capt()
 
 void MyWindow::on_pushButton_2_clicked()
 {
-    blinkLED(QString("y"));
+    if(arduino->isWritable())
+    {
+        arduino->write("h");
+        arduino->write(",");
+        arduino->write("r");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
 
 }
 
-void MyWindow::blinkLED(QString command)
+
+void MyWindow::on_pushButton_3_clicked()
 {
     if(arduino->isWritable())
     {
-        arduino->write(command.toStdString().c_str());
+        arduino->write("h");
+        arduino->write(",");
+        arduino->write("l");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+
+
+void MyWindow::on_pushButton_4_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("1");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+
+
+void MyWindow::on_pushButton_5_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("2");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+
+
+void MyWindow::on_pushButton_6_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("3");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_7_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("4");
+        arduino->write("\n");
     }
     else
     {
