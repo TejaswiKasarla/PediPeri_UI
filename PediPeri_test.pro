@@ -25,7 +25,7 @@ FORMS    += pediperi.ui \
     mywindow.ui
 INCLUDEPATH += C:/opencv/sources/build_mingw/install/include
 LIBS += -L"C:/opencv/sources/build_mingw/install/x64/mingw/bin"
-LIBS += -llibopencv_calib3d2411 -llibopencv_contrib2411 -llibopencv_core2411 -llibopencv_features2d2411 -llibopencv_gpu2411 -llibopencv_highgui2411 -llibopencv_imgproc2411 -llibopencv_legacy2411 -llibopencv_photo2411 -llibopencv_video2411 -llibopencv_videostab2411 -lopencv_ffmpeg2411_64
+LIBS +=  -llibopencv_core2411 -llibopencv_features2d2411 -llibopencv_gpu2411 -llibopencv_highgui2411 -llibopencv_imgproc2411 -llibopencv_legacy2411 -llibopencv_photo2411 -llibopencv_video2411 -llibopencv_videostab2411 -lopencv_ffmpeg2411_64
 
 QT += serialport
 

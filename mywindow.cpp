@@ -25,10 +25,10 @@ MyWindow::MyWindow(QWidget *parent) :
         qDebug() <<"webcam is not opened";
         return;
     }
-
+capWebcam.set(CV_CAP_PROP_FPS,120);
 tmrTimer = new QTimer(this);
 connect(tmrTimer, SIGNAL(timeout()),this,SLOT(capt()));
-tmrTimer->start(20);
+tmrTimer->start(8);
 arduino_is_available = false;
 arduino_port_name = "";
 arduino = new QSerialPort;
@@ -96,32 +96,43 @@ MyWindow::~MyWindow()
 
 void MyWindow::on_pushButton_clicked()
 {
-    if(tmrTimer->isActive()==true)
+   if(tmrTimer->isActive()==true)
     {
         tmrTimer->stop();
         ui->pushButton->setText("resume");
     }
     else
     {
-        tmrTimer->start(20);
+        tmrTimer->start(8);
         ui->pushButton->setText("pause");
     }
  capt();
-}
+   /* while(1)
+    {
+        capWebcam.read(frame);
+        char fname[100];
+        strcpy(fname, "video1.avi");
+        //Define VideoWriter object for storing the video
+        VideoWriter video1(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols, frame.rows));  //CV_FOURCC('M','J','P','G') is a motion-jpeg code
+        video1.write(frame);
 
+    }*/
+}
 void MyWindow::capt()
 {
     char fname[100];
-    strcpy(fname, "C://Users//TSMS//Documents//fps//FPS//video1.avi");
+    strcpy(fname, "video1.avi");
     /*Define VideoiWriter object for storing the video*/
       VideoWriter video1(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols, frame.rows));  //CV_FOURCC('M','J','P','G') is a motion-jpeg codec
 
         capWebcam.read(frame);
+
         if(frame.empty()==true) return;
         cv::cvtColor(frame,frame,CV_BGR2RGB);
         QImage qimg((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
         ui->label->setPixmap(QPixmap::fromImage(qimg));
-        video1<<frame;
+        video1.write(frame);
+
 
 }
 
@@ -222,4 +233,172 @@ void MyWindow::on_pushButton_7_clicked()
     {
     qDebug() << "Couldn't Write to Serial!" ;
     }
+}
+
+void MyWindow::hemirightlower()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("h");
+        arduino->write(",");
+        arduino->write("b");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::hemileftlower()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("h");
+        arduino->write(",");
+        arduino->write("r");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::quad1()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("5");
+        arduino->write("\n");
+    }
+    else
+    {
+    qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::quad2()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("6");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::quad3()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("7");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+void MyWindow::quad4()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("q");
+        arduino->write(",");
+        arduino->write("8");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+void MyWindow::on_pushButton_11_clicked()
+{
+    quad2();
+}
+
+void MyWindow::on_pushButton_8_clicked()
+{
+    quad2();
+}
+
+void MyWindow::on_pushButton_9_clicked()
+{
+    quad2();
+}
+
+void MyWindow::on_pushButton_10_clicked()
+{
+    quad2();
+}
+
+void MyWindow::on_pushButton_13_clicked()
+{
+    quad1();
+}
+
+void MyWindow::on_pushButton_15_clicked()
+{
+    quad1();
+}
+
+void MyWindow::on_pushButton_14_clicked()
+{
+    quad1();
+}
+
+void MyWindow::on_pushButton_12_clicked()
+{
+    quad1();
+}
+
+void MyWindow::on_pushButton_16_clicked()
+{
+    quad4();
+}
+
+void MyWindow::on_pushButton_23_clicked()
+{
+    quad4();
+}
+
+void MyWindow::on_pushButton_17_clicked()
+{
+    quad4();
+}
+
+void MyWindow::on_pushButton_20_clicked()
+{
+    quad3();
+}
+
+void MyWindow::on_pushButton_19_clicked()
+{
+    quad3();
+}
+
+void MyWindow::on_pushButton_18_clicked()
+{
+    quad3();
+}
+
+void MyWindow::on_pushButton_21_clicked()
+{
+    hemirightlower();
+}
+
+void MyWindow::on_pushButton_22_clicked()
+{
+    hemileftlower();
 }
