@@ -7,6 +7,7 @@
 #include <QtSerialPort/QSerialPort>
 
 
+
 namespace Ui {
 class MyWindow;
 }
@@ -88,6 +89,7 @@ private:
 
     QTimer* tmrTimer;
     QTimer* recTimer;
+
     cv::VideoWriter video1;
     static const quint16 arduino_uno_vendor_id = 9025;
     static const quint16 arduino_uno_product_id = 66;

@@ -13,7 +13,7 @@
 
 
 using namespace cv;
-Mat cameraFrame;
+
 
 MyWindow::MyWindow(QWidget *parent):
     QMainWindow(parent),
@@ -33,14 +33,7 @@ tmrTimer->start(8);
 
 recTimer = new QTimer(this);
 
-char fname[100];
-strcpy(fname, "videox.avi");
-qDebug()<<"created video file";
-VideoWriter video1;
-video1.open(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols,frame.rows));
-connect(recTimer,SIGNAL(timeout()),this, SLOT(recordVideo()));
-qDebug() << "Recording started";
-recTimer->start(8);
+
 
 arduino_is_available = false;
 arduino_port_name = "";
@@ -127,7 +120,9 @@ void MyWindow::capt()
 { 
         capWebcam.read(frame);
         if(frame.empty()==true) return;
+
         cv::cvtColor(frame,frame,CV_BGR2RGB);
+
         QImage qimg((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
 
         ui->label->setPixmap(QPixmap::fromImage(qimg));
@@ -402,29 +397,29 @@ void MyWindow::on_pushButton_22_clicked()
 
 void MyWindow::on_pushButton_24_clicked()
 {
-    if(recTimer->isActive()==true)
-     {
-         recTimer->stop();
-         ui->pushButton_24->setText("resume");
-     }
-     else
-     {
-         recTimer->start(8);
-         ui->pushButton_24->setText("pause");
-     }
-recordVideo();
+
+    char fname[100];
+    strcpy(fname, "video1.avi");
+    qDebug()<<"created video file";
+    VideoWriter video1;
+    video1.open(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols,frame.rows),true);
+    connect(recTimer,SIGNAL(timeout()),this, SLOT(recordVideo()));
+    qDebug() << "Recording started";
+    recTimer->start(100);
+
 }
 void MyWindow::recordVideo()
 {
     qDebug()<<"Recording phase one";
     bool bSuccess = capWebcam.read(frame); // get a new frame from camera
 
+    qDebug()<< frame.rows<<"";
     if (!bSuccess) {
 
     qDebug() << "not recording";
     }
 
-    video1<< frame;
+    video1.write(frame);
     qDebug()<<"successfully started recording";
 
 }
