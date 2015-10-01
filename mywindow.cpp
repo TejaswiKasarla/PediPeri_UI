@@ -11,10 +11,11 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QtWidgets>
 
+
 using namespace cv;
 Mat cameraFrame;
 
-MyWindow::MyWindow(QWidget *parent) :
+MyWindow::MyWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MyWindow)
 {
@@ -29,6 +30,18 @@ capWebcam.set(CV_CAP_PROP_FPS,120);
 tmrTimer = new QTimer(this);
 connect(tmrTimer, SIGNAL(timeout()),this,SLOT(capt()));
 tmrTimer->start(8);
+
+recTimer = new QTimer(this);
+
+char fname[100];
+strcpy(fname, "videox.avi");
+qDebug()<<"created video file";
+VideoWriter video1;
+video1.open(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols,frame.rows));
+connect(recTimer,SIGNAL(timeout()),this, SLOT(recordVideo()));
+qDebug() << "Recording started";
+recTimer->start(8);
+
 arduino_is_available = false;
 arduino_port_name = "";
 arduino = new QSerialPort;
@@ -88,6 +101,7 @@ MyWindow::~MyWindow()
         }
     delete ui;
     capWebcam.release();
+    video1.release();
 }
 
 
@@ -107,33 +121,16 @@ void MyWindow::on_pushButton_clicked()
         ui->pushButton->setText("pause");
     }
  capt();
-   /* while(1)
-    {
-        capWebcam.read(frame);
-        char fname[100];
-        strcpy(fname, "video1.avi");
-        //Define VideoWriter object for storing the video
-        VideoWriter video1(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols, frame.rows));  //CV_FOURCC('M','J','P','G') is a motion-jpeg code
-        video1.write(frame);
 
-    }*/
 }
 void MyWindow::capt()
-{
-    char fname[100];
-    strcpy(fname, "video1.avi");
-    /*Define VideoiWriter object for storing the video*/
-      VideoWriter video1(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols, frame.rows));  //CV_FOURCC('M','J','P','G') is a motion-jpeg codec
-
+{ 
         capWebcam.read(frame);
-
         if(frame.empty()==true) return;
         cv::cvtColor(frame,frame,CV_BGR2RGB);
         QImage qimg((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+
         ui->label->setPixmap(QPixmap::fromImage(qimg));
-        video1.write(frame);
-
-
 }
 
 
@@ -256,7 +253,7 @@ void MyWindow::hemileftlower()
     {
         arduino->write("h");
         arduino->write(",");
-        arduino->write("r");
+        arduino->write("a");
         arduino->write("\n");
     }
     else
@@ -402,3 +399,33 @@ void MyWindow::on_pushButton_22_clicked()
 {
     hemileftlower();
 }
+
+void MyWindow::on_pushButton_24_clicked()
+{
+    if(recTimer->isActive()==true)
+     {
+         recTimer->stop();
+         ui->pushButton_24->setText("resume");
+     }
+     else
+     {
+         recTimer->start(8);
+         ui->pushButton_24->setText("pause");
+     }
+recordVideo();
+}
+void MyWindow::recordVideo()
+{
+    qDebug()<<"Recording phase one";
+    bool bSuccess = capWebcam.read(frame); // get a new frame from camera
+
+    if (!bSuccess) {
+
+    qDebug() << "not recording";
+    }
+
+    video1<< frame;
+    qDebug()<<"successfully started recording";
+
+}
+

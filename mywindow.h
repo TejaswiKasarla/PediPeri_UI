@@ -6,6 +6,7 @@
 #include <opencv/highgui.h>
 #include <QtSerialPort/QSerialPort>
 
+
 namespace Ui {
 class MyWindow;
 }
@@ -66,6 +67,8 @@ private slots:
 
     void on_pushButton_22_clicked();
 
+    void on_pushButton_24_clicked();
+
 public slots:
 void capt();
 void hemirightlower();
@@ -74,7 +77,7 @@ void quad1();
 void quad2();
 void quad3();
 void quad4();
-
+void recordVideo();
 
 private:
     Ui::MyWindow *ui;
@@ -84,7 +87,8 @@ private:
     QImage qimg;
 
     QTimer* tmrTimer;
-
+    QTimer* recTimer;
+    cv::VideoWriter video1;
     static const quint16 arduino_uno_vendor_id = 9025;
     static const quint16 arduino_uno_product_id = 66;
     QString arduino_port_name;
