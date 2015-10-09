@@ -70,6 +70,62 @@ private slots:
 
     void on_pushButton_24_clicked();
 
+    void on_pushButton_25_clicked();
+
+    void on_pushButton_26_clicked();
+
+    void on_pushButton_39_clicked();
+
+    void on_pushButton_38_clicked();
+
+    void on_pushButton_37_clicked();
+
+    void on_pushButton_36_clicked();
+
+    void on_pushButton_35_clicked();
+
+    void on_pushButton_34_clicked();
+
+    void on_pushButton_33_clicked();
+
+    void on_pushButton_32_clicked();
+
+    void on_pushButton_31_clicked();
+
+    void on_pushButton_30_clicked();
+
+    void on_pushButton_29_clicked();
+
+    void on_pushButton_28_clicked();
+
+    void on_pushButton_27_clicked();
+
+    void on_pushButton_48_clicked();
+
+    void on_pushButton_47_clicked();
+
+    void on_pushButton_46_clicked();
+
+    void on_pushButton_45_clicked();
+
+    void on_pushButton_44_clicked();
+
+    void on_pushButton_43_clicked();
+
+    void on_pushButton_42_clicked();
+
+    void on_pushButton_41_clicked();
+
+    void on_pushButton_40_clicked();
+
+    void on_pushButton_49_clicked();
+
+    void on_pushButton_50_clicked();
+
+    void on_horizontalSlider_sliderMoved(int position);
+
+    void on_horizontalSlider_actionTriggered(int action);
+
 public slots:
 void capt();
 void hemirightlower();
@@ -79,6 +135,7 @@ void quad2();
 void quad3();
 void quad4();
 void recordVideo();
+void sendvalues(int value);
 
 private:
     Ui::MyWindow *ui;

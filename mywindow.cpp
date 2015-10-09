@@ -1,6 +1,7 @@
 #include "mywindow.h"
 #include "ui_mywindow.h"
 #include "QString"
+#include "QTextStream"
 #include "QLabel"
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
@@ -10,6 +11,8 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include <QtWidgets>
+#include <QtMultimedia/QCameraInfo>
+#include <QList>
 
 
 using namespace cv;
@@ -19,7 +22,9 @@ MyWindow::MyWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MyWindow)
 {
+
     ui->setupUi(this);
+    //QList <QCameraInfo> cameras = QCameraInfo::availableCameras();
     capWebcam.open(0);
     if(capWebcam.isOpened() == false)
     {
@@ -95,6 +100,7 @@ MyWindow::~MyWindow()
     delete ui;
     capWebcam.release();
     video1.release();
+
 }
 
 
@@ -423,4 +429,415 @@ void MyWindow::recordVideo()
     qDebug()<<"successfully started recording";
 
 }
+
+
+void MyWindow::on_pushButton_25_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("48");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_26_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("37");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_39_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("46");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_38_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("44");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_37_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("42");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_36_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("40");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_35_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("38");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_34_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("36");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_33_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("34");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_32_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("32");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_31_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("30");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_30_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("28");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_29_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("26");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_28_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("24");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_27_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("22");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_48_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("35");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_47_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("33");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_46_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("31");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_45_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("29");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_44_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("27");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_43_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("25");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_42_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("23");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_41_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("52");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_40_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("50");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_49_clicked()
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("x");
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+}
+
+void MyWindow::on_pushButton_50_clicked()
+{
+   connect(ui->horizontalSlider,SIGNAL(valueChanged(int)),this, SLOT(sendvalues(int)));
+   QString text = ui->lineEdit->text();
+   if(arduino->isWritable())
+   {
+       arduino->write("t");
+       arduino->write(",");
+       arduino->write(text.toUtf8());
+       arduino->write("\n");
+   }
+   else
+   {
+       qDebug() << "Couldn't Write to Serial!" ;
+   }
+
+}
+
+void MyWindow::sendvalues(int value)
+{
+    if(arduino->isWritable())
+    {
+        arduino->write("m");
+        arduino->write(",");
+        arduino->write((char*)value);
+        arduino->write("\n");
+    }
+    else
+    {
+        qDebug() << "Couldn't Write to Serial!" ;
+    }
+
+}
+
+
+
 
