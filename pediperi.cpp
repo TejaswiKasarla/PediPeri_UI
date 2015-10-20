@@ -4,6 +4,7 @@
 #include "QString"
 #include "QTextStream"
 #include "mywindow.h"
+#include "QDir"
 
 
 PediPeri::PediPeri(QWidget *parent) :
@@ -32,15 +33,32 @@ void PediPeri::writefile()
     QString Age = ui->lineEdit_2->text();
     QString EMR = ui->lineEdit_3->text();
     QString Description = ui->textEdit->toPlainText();
-    //QString Gender = ui->comboBox->
-    QString filename = "data.txt";
+    QString Gender = ui->comboBox->currentText();
+    if(QDir("Patient Data").exists())
+    {
+        QDir().setCurrent("Patient Data");
+    }
+    else
+    {
+        QDir().mkdir("Patient Data");
+        QDir().setCurrent("Patient Data");
+    }
+    if (QDir(ui->lineEdit_3->text()).exists())
+    {
+        QDir().setCurrent(ui->lineEdit_3->text());
+    }
+    else
+    {
+        QDir().setCurrent(ui->lineEdit_3->text());
+    }
+    QString filename = ui->lineEdit_3->text()+".txt";
     QFile file(filename);
     file.open(QIODevice::WriteOnly|QIODevice::Text);
     QTextStream out(&file);
     out<<"Name: "<<Name<<endl;
     out<<"Age: "<<Age<<endl;
     out<<"EMR No.: "<<EMR<<endl;
-    //out<<"Gender: "<<Gender<<endl;
+    out<<"Gender: "<<Gender<<endl;
     out<<"Description of Patient: "<<Description<<endl;
     file.close();
     PediPeri::close();

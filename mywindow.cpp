@@ -28,7 +28,6 @@ MyWindow::MyWindow(QWidget *parent):
     capWebcam.open(0);
     if(capWebcam.isOpened() == false)
     {
-        qDebug() <<"webcam is not opened";
         return;
     }
 capWebcam.set(CV_CAP_PROP_FPS,120);
@@ -127,6 +126,11 @@ void MyWindow::capt()
         capWebcam.read(frame);
         if(frame.empty()==true) return;
 
+        std::ostringstream strs;
+        strs << "Recording";
+        std::string str = strs.str();
+        putText(frame, strs.str() , cvPoint(15,20),FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200,255,250), 1, CV_AA);
+
         cv::cvtColor(frame,frame,CV_BGR2RGB);
 
         QImage qimg((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
@@ -146,7 +150,7 @@ void MyWindow::on_pushButton_2_clicked()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 
 }
@@ -163,7 +167,7 @@ void MyWindow::on_pushButton_3_clicked()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -180,7 +184,7 @@ void MyWindow::on_pushButton_4_clicked()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -197,7 +201,7 @@ void MyWindow::on_pushButton_5_clicked()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -214,7 +218,7 @@ void MyWindow::on_pushButton_6_clicked()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -229,7 +233,7 @@ void MyWindow::on_pushButton_7_clicked()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -244,7 +248,7 @@ void MyWindow::hemirightlower()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -259,7 +263,7 @@ void MyWindow::hemileftlower()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -274,7 +278,7 @@ void MyWindow::quad1()
     }
     else
     {
-    qDebug() << "Couldn't Write to Serial!" ;
+    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -289,7 +293,7 @@ void MyWindow::quad2()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -304,7 +308,7 @@ void MyWindow::quad3()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 void MyWindow::quad4()
@@ -318,7 +322,7 @@ void MyWindow::quad4()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 void MyWindow::on_pushButton_11_clicked()
@@ -406,27 +410,27 @@ void MyWindow::on_pushButton_24_clicked()
 
     char fname[100];
     strcpy(fname, "video1.avi");
-    qDebug()<<"created video file";
+
     VideoWriter video1;
     video1.open(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols,frame.rows),true);
     connect(recTimer,SIGNAL(timeout()),this, SLOT(recordVideo()));
-    qDebug() << "Recording started";
+
     recTimer->start(100);
 
 }
 void MyWindow::recordVideo()
 {
-    qDebug()<<"Recording phase one";
+
     bool bSuccess = capWebcam.read(frame); // get a new frame from camera
 
-    qDebug()<< frame.rows<<"";
+
     if (!bSuccess) {
 
-    qDebug() << "not recording";
+   ui->label_5->setText("Not Recording!");
     }
 
     video1.write(frame);
-    qDebug()<<"successfully started recording";
+
 
 }
 
@@ -442,7 +446,7 @@ void MyWindow::on_pushButton_25_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -457,7 +461,7 @@ void MyWindow::on_pushButton_26_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -472,7 +476,7 @@ void MyWindow::on_pushButton_39_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -487,7 +491,7 @@ void MyWindow::on_pushButton_38_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -502,7 +506,7 @@ void MyWindow::on_pushButton_37_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -517,7 +521,7 @@ void MyWindow::on_pushButton_36_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -532,7 +536,7 @@ void MyWindow::on_pushButton_35_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -547,7 +551,7 @@ void MyWindow::on_pushButton_34_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -562,7 +566,7 @@ void MyWindow::on_pushButton_33_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -577,7 +581,7 @@ void MyWindow::on_pushButton_32_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -592,7 +596,7 @@ void MyWindow::on_pushButton_31_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -607,7 +611,7 @@ void MyWindow::on_pushButton_30_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -622,7 +626,7 @@ void MyWindow::on_pushButton_29_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -637,7 +641,7 @@ void MyWindow::on_pushButton_28_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -652,7 +656,7 @@ void MyWindow::on_pushButton_27_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -667,7 +671,7 @@ void MyWindow::on_pushButton_48_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -682,7 +686,7 @@ void MyWindow::on_pushButton_47_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -697,7 +701,7 @@ void MyWindow::on_pushButton_46_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -712,7 +716,7 @@ void MyWindow::on_pushButton_45_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -727,7 +731,7 @@ void MyWindow::on_pushButton_44_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -742,7 +746,7 @@ void MyWindow::on_pushButton_43_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -757,7 +761,7 @@ void MyWindow::on_pushButton_42_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -772,7 +776,7 @@ void MyWindow::on_pushButton_41_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -787,7 +791,7 @@ void MyWindow::on_pushButton_40_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -800,7 +804,7 @@ void MyWindow::on_pushButton_49_clicked()
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -817,7 +821,7 @@ void MyWindow::on_pushButton_50_clicked()
    }
    else
    {
-       qDebug() << "Couldn't Write to Serial!" ;
+       ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
    }
 
 }
@@ -833,7 +837,7 @@ void MyWindow::sendvalues(int value)
     }
     else
     {
-        qDebug() << "Couldn't Write to Serial!" ;
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 
 }
