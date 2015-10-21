@@ -129,7 +129,7 @@ void MyWindow::capt()
     std::string str = strs.str();
     putText(frame, strs.str() , cvPoint(15,20),FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200,255,250), 1, CV_AA);
     std::string stringshow = updatestr.toStdString();
-    putText(frame,stringshow, cvPoint(420,450),FONT_HERSHEY_COMPLEX_SMALL,0.8,cvScalar(200,255,200),1,CV_AA);
+    putText(frame,stringshow, cvPoint(420,45),FONT_HERSHEY_COMPLEX_SMALL,0.8,cvScalar(200,255,200),1,CV_AA);
     if (!bSuccess) {
 
    ui->label_5->setText("Not Recording!");

@@ -68,8 +68,6 @@ private slots:
 
     void on_pushButton_22_clicked();
 
-    void on_pushButton_24_clicked();
-
     void on_pushButton_25_clicked();
 
     void on_pushButton_26_clicked();
@@ -143,15 +141,14 @@ private:
     cv::Mat frame;
     QSerialPort *arduino;
     QImage qimg;
-
     QTimer* tmrTimer;
-    QTimer* recTimer;
-
-    cv::VideoWriter video1;
+    cv::VideoWriter videorecording;
     static const quint16 arduino_uno_vendor_id = 9025;
     static const quint16 arduino_uno_product_id = 66;
     QString arduino_port_name;
     bool arduino_is_available;
+    int i=0;
+    QString updatestr;
 };
 
 

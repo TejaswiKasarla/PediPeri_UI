@@ -49,6 +49,7 @@ void PediPeri::writefile()
     }
     else
     {
+        QDir().mkdir(ui->lineEdit_3->text());
         QDir().setCurrent(ui->lineEdit_3->text());
     }
     QString filename = ui->lineEdit_3->text()+".txt";
@@ -60,6 +61,7 @@ void PediPeri::writefile()
     out<<"EMR No.: "<<EMR<<endl;
     out<<"Gender: "<<Gender<<endl;
     out<<"Description of Patient: "<<Description<<endl;
+    QDir().setCurrent(ui->lineEdit_3->text());
     file.close();
     PediPeri::close();
 }
