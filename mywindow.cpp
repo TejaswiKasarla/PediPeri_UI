@@ -1,43 +1,31 @@
 #include "mywindow.h"
 #include "ui_mywindow.h"
-#include "QString"
-#include "QTextStream"
-#include "QLabel"
+#include "mythread.h"
+
+#include <QtCore>
+#include <QtSerialPort>
+#include <QtWidgets>
+
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include <QTimer>
-#include <QDebug>
-#include <QtCore>
-#include <QtSerialPort/QSerialPort>
-#include <QtSerialPort/QSerialPortInfo>
-#include <QtWidgets>
-#include <QtMultimedia/QCameraInfo>
-#include <QList>
-
 
 using namespace cv;
-
 
 MyWindow::MyWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MyWindow)
 {
-
     ui->setupUi(this);
+
     capWebcam.open(0);
-    capWebcam.set(CV_CAP_PROP_FPS,120);
     if(capWebcam.isOpened() == false)
     {
         return;
     }
+
 tmrTimer = new QTimer(this);
-char fname[100];
-strcpy(fname, "videorecording.avi");
-VideoWriter videorecording;
-videorecording.open(fname,CV_FOURCC('M','J','P','G'),120,cvSize(frame.cols,frame.rows),true);
 connect(tmrTimer, SIGNAL(timeout()),this,SLOT(capt()));
 tmrTimer->start(1);
-
 
 arduino_is_available = false;
 arduino_port_name = "";
@@ -87,15 +75,14 @@ arduino = new QSerialPort;
         //give error message
         QMessageBox::warning(this,"Port error","Couldn't find the Arduino!");
     }
-
 }
 
 MyWindow::~MyWindow()
 {
-        if(arduino->isOpen())
-        {
-            arduino->close();
-        }
+    if(arduino->isOpen())
+    {
+        arduino->close();
+    }
     delete ui;
     capWebcam.release();
     videorecording.release();
@@ -104,7 +91,7 @@ MyWindow::~MyWindow()
 
 void MyWindow::on_pushButton_clicked()
 {
-   if(tmrTimer->isActive()==true)
+    if(tmrTimer->isActive()==true)
     {
         tmrTimer->stop();
         ui->pushButton->setText("resume");
@@ -114,7 +101,7 @@ void MyWindow::on_pushButton_clicked()
         tmrTimer->start(1);
         ui->pushButton->setText("pause");
     }
- capt();
+    capt();
 }
 
 void MyWindow::capt()
@@ -129,13 +116,13 @@ void MyWindow::capt()
     std::string str = strs.str();
     putText(frame, strs.str() , cvPoint(15,20),FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200,255,250), 1, CV_AA);
     std::string stringshow = updatestr.toStdString();
-    putText(frame,stringshow, cvPoint(420,450),FONT_HERSHEY_COMPLEX_SMALL,0.8,cvScalar(200,255,200),1,CV_AA);
-    if (!bSuccess) {
+    putText(frame,stringshow, cvPoint(300,450),FONT_HERSHEY_COMPLEX_SMALL,0.8,cvScalar(200,255,200),1,CV_AA);
 
-   ui->label_5->setText("Not Recording!");
+    if (!bSuccess)
+    {
+
+        ui->label_5->setText("Not Recording!");
     }
-
-    videorecording.write(frame);
 
     cv::cvtColor(frame,frame,CV_BGR2RGB);
 
@@ -150,6 +137,7 @@ void MyWindow::on_pushButton_2_clicked()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Hemisphere, right";
         arduino->write("h");
         arduino->write(",");
         arduino->write("r");
@@ -157,7 +145,7 @@ void MyWindow::on_pushButton_2_clicked()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 
 }
@@ -167,6 +155,7 @@ void MyWindow::on_pushButton_3_clicked()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Hemisphere, left";
         arduino->write("h");
         arduino->write(",");
         arduino->write("l");
@@ -174,8 +163,7 @@ void MyWindow::on_pushButton_3_clicked()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
-    updatestr = "Left Hemisphere";
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -185,6 +173,7 @@ void MyWindow::on_pushButton_4_clicked()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, bottom right";
         arduino->write("q");
         arduino->write(",");
         arduino->write("1");
@@ -192,7 +181,7 @@ void MyWindow::on_pushButton_4_clicked()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -202,6 +191,7 @@ void MyWindow::on_pushButton_5_clicked()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, top right";
         arduino->write("q");
         arduino->write(",");
         arduino->write("2");
@@ -209,7 +199,7 @@ void MyWindow::on_pushButton_5_clicked()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -219,6 +209,7 @@ void MyWindow::on_pushButton_6_clicked()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, top left";
         arduino->write("q");
         arduino->write(",");
         arduino->write("3");
@@ -226,7 +217,7 @@ void MyWindow::on_pushButton_6_clicked()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -234,6 +225,7 @@ void MyWindow::on_pushButton_7_clicked()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, bottom left";
         arduino->write("q");
         arduino->write(",");
         arduino->write("4");
@@ -241,7 +233,7 @@ void MyWindow::on_pushButton_7_clicked()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -249,6 +241,7 @@ void MyWindow::hemirightlower()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Hemisphere, right inner";
         arduino->write("h");
         arduino->write(",");
         arduino->write("b");
@@ -256,7 +249,7 @@ void MyWindow::hemirightlower()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -264,6 +257,7 @@ void MyWindow::hemileftlower()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Hemisphere, left inner";
         arduino->write("h");
         arduino->write(",");
         arduino->write("a");
@@ -271,7 +265,7 @@ void MyWindow::hemileftlower()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -279,6 +273,7 @@ void MyWindow::quad1()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, bottom right inner";
         arduino->write("q");
         arduino->write(",");
         arduino->write("5");
@@ -286,7 +281,7 @@ void MyWindow::quad1()
     }
     else
     {
-    ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
     }
 }
 
@@ -294,6 +289,7 @@ void MyWindow::quad2()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, top right inner";
         arduino->write("q");
         arduino->write(",");
         arduino->write("6");
@@ -309,6 +305,7 @@ void MyWindow::quad3()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, top left inner";
         arduino->write("q");
         arduino->write(",");
         arduino->write("7");
@@ -323,6 +320,7 @@ void MyWindow::quad4()
 {
     if(arduino->isWritable())
     {
+        updatestr = "Quadrant, bottom left inner";
         arduino->write("q");
         arduino->write(",");
         arduino->write("8");
@@ -418,6 +416,7 @@ void MyWindow::on_pushButton_25_clicked()
 {
     if(arduino->isWritable())
     {
+
         arduino->write("s");
         arduino->write(",");
         arduino->write("48");
@@ -437,6 +436,7 @@ void MyWindow::on_pushButton_26_clicked()
         arduino->write(",");
         arduino->write("37");
         arduino->write("\n");
+
     }
     else
     {
@@ -821,6 +821,8 @@ void MyWindow::sendvalues(int value)
 
 }
 
-
-
-
+void MyWindow::on_pushButton_24_clicked()
+{
+    Mythread mthread;
+    mthread.run();
+}

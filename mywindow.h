@@ -2,11 +2,10 @@
 #define MYWINDOW_H
 
 #include <QMainWindow>
+#include <QtSerialPort>
+
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include <QtSerialPort/QSerialPort>
-
-
 
 namespace Ui {
 class MyWindow;
@@ -123,6 +122,8 @@ private slots:
     void on_horizontalSlider_sliderMoved(int position);
 
     void on_horizontalSlider_actionTriggered(int action);
+
+    void on_pushButton_24_clicked();
 
 public slots:
 void capt();

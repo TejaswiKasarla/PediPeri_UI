@@ -1,10 +1,9 @@
 #include "pediperi.h"
 #include "ui_pediperi.h"
-#include "QFile"
-#include "QString"
-#include "QTextStream"
 #include "mywindow.h"
-#include "QDir"
+
+#include <QtCore>
+
 
 
 PediPeri::PediPeri(QWidget *parent) :
@@ -61,7 +60,9 @@ void PediPeri::writefile()
     out<<"EMR No.: "<<EMR<<endl;
     out<<"Gender: "<<Gender<<endl;
     out<<"Description of Patient: "<<Description<<endl;
+
     QDir().setCurrent(ui->lineEdit_3->text());
+
     file.close();
     PediPeri::close();
 }

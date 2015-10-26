@@ -1180,6 +1180,19 @@
      <string/>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_24">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>560</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>start rec</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
