@@ -15,13 +15,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         pediperi.cpp \
-    mywindow.cpp \
-    mythread.cpp
+    mywindow.cpp
 
 
 HEADERS  += pediperi.h \
-    mywindow.h \
-    mythread.h
+    mywindow.h
 
 
 FORMS    += pediperi.ui \
