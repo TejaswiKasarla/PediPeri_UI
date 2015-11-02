@@ -119,9 +119,7 @@ private slots:
 
     void on_pushButton_50_clicked();
 
-    void on_horizontalSlider_sliderMoved(int position);
 
-    void on_horizontalSlider_actionTriggered(int action);
 
     void on_pushButton_24_clicked();
 
@@ -133,7 +131,6 @@ void quad1();
 void quad2();
 void quad3();
 void quad4();
-void recordVideo();
 void sendvalues(int value);
 
 private:
