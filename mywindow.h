@@ -18,6 +18,7 @@ class MyWindow : public QMainWindow
 public:
     explicit MyWindow(QWidget *parent = 0);
     ~MyWindow();
+    Ui::MyWindow *ui;
 
 
 private slots:
@@ -132,21 +133,26 @@ void quad2();
 void quad3();
 void quad4();
 void sendvalues(int value);
+void serialReceived();
+void keyPressEvent(QKeyEvent *event);
+
 
 private:
-    Ui::MyWindow *ui;
+    QByteArray inByteArray;
     cv::VideoCapture capWebcam;
     cv::Mat frame;
     QSerialPort *arduino;
     QImage qimg;
     QTimer* tmrTimer;
-    cv::VideoWriter videorecording;
     static const quint16 arduino_uno_vendor_id = 9025;
     static const quint16 arduino_uno_product_id = 66;
     QString arduino_port_name;
     bool arduino_is_available;
     int i=0;
     QString updatestr;
+    int qarray;
+    float ang;
+    float degree;
 };
 
 

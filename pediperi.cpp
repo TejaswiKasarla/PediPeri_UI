@@ -16,6 +16,8 @@ PediPeri::PediPeri(QWidget *parent) :
 PediPeri::~PediPeri()
 {
     delete ui;
+
+    delete mw;
 }
 
 void PediPeri::on_pushButton_4_clicked()
@@ -64,7 +66,7 @@ void PediPeri::writefile()
     QDir().setCurrent(ui->lineEdit_3->text());
 
     file.close();
-    PediPeri::close();
+
 }
 
 void PediPeri::on_pushButton_2_clicked()

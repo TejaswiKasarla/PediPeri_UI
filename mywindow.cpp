@@ -5,6 +5,8 @@
 #include <QtCore>
 #include <QtSerialPort>
 #include <QtWidgets>
+#include <QDebug>
+#include <QtMath>
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
@@ -12,7 +14,6 @@
 #include <boost/thread.hpp>
 #include <boost/thread/barrier.hpp>
 #include <boost/bind.hpp>
-//#include <boost/atomic.hpp>
 #include <vector>
 #include <sstream>
 #include <boost/lexical_cast.hpp>
@@ -24,109 +25,6 @@ using namespace std;
 using namespace boost::posix_time;
 using namespace cv;
 
-void captureFunc(Mat *frame, VideoCapture *capture){
-  //loop infinitely
-  for(;;){
-        //capture from webcame to Mat frame
-        (*capture) >> (*frame);
-    }
-}
-
-void capture_image(boost::barrier& cur_barier, VideoCapture capWebcam)
-{
-    time_duration td, td1;
-    ptime nextFrameTimestamp, currentFrameTimestamp, initialLoopTimestamp, finalLoopTimestamp;
-    int delayFound;
-    //int totalDelay= 0;
-
-    // initialize capture on default source
-
-
-
-    // set framerate to record and capture at
-    int framerate = 120;
-
-
-
-    // Get the properties from the camera
-    double width = capWebcam.get(CV_CAP_PROP_FRAME_WIDTH);
-    double height = capWebcam.get(CV_CAP_PROP_FRAME_HEIGHT);
-
-    // print camera frame size
-  // cout << "Camera properties\n";
-  // cout << "width = " << width << endl <<"height = "<< height << endl;
-
-    // Create a matrix to keep the retrieved frame
-    Mat frame;
-
-    // Create the video writer
-    VideoWriter video("capture.avi",CV_FOURCC('D','I','V','X'), framerate, cvSize((int)width,(int)height) );
-
-    // initialize initial timestamps
-    nextFrameTimestamp = microsec_clock::local_time();
-    currentFrameTimestamp = nextFrameTimestamp;
-    td = (currentFrameTimestamp - nextFrameTimestamp);
-
-    // start thread to begin capture and populate Mat frame
-    boost::thread captureThread(captureFunc, &frame, &capWebcam);
-   // namedWindow("Video",WINDOW_NORMAL);
-   // namedWindow("image",WINDOW_AUTOSIZE);
-    // loop infinitely
-    int i=0;
-    for(;;)
-    {
-
-        // wait for X microseconds until 1second/framerate time has passed after previous frame write
-        while(td.total_microseconds() < 1000000/framerate){
-        //determine current elapsed time
-            currentFrameTimestamp = microsec_clock::local_time();
-            td = (currentFrameTimestamp - nextFrameTimestamp);
-        }
-
-        //	 determine time at start of write
-        initialLoopTimestamp = microsec_clock::local_time();
-
-
-        if((frame.rows && frame.cols)){
-
-    std::ostringstream strs;
-    strs << i;
-    std::string str = strs.str();
-    putText(frame, strs.str() , cvPoint(100,100),FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200,255,250), 1, CV_AA);
-    waitKey(1) && 0xFF;
-    i++;
-
-        }
-
-        // Save frame to video
-        video << frame;
-
-        //write previous and current frame timestamp to console
-       // cout << nextFrameTimestamp << " " << currentFrameTimestamp << " ";
-
-
-        // add 1second/framerate time for next loop pause
-        nextFrameTimestamp = nextFrameTimestamp + microsec(1000000/framerate);
-
-        // reset time_duration so while loop engages
-        td = (currentFrameTimestamp - nextFrameTimestamp);
-       // cout<< (td) <<" "<<endl;
-        //determine and print out delay in ms, should be less than 1000/FPS
-        //occasionally, if delay is larger than said value, correction will occur
-        //if delay is consistently larger than said value, then CPU is not powerful
-        // enough to capture/decompress/record/compress that fast.
-        finalLoopTimestamp = microsec_clock::local_time();
-        td1 = (finalLoopTimestamp - initialLoopTimestamp);
-        delayFound = td1.total_milliseconds();
-//        cout << delayFound << endl;
-
-        //output will be in following format
-        //[TIMESTAMP OF PREVIOUS FRAME] [TIMESTAMP OF NEW FRAME] [TIME DELAY OF WRITING]
-
-    }
-
-    // Exit
-}
 
 
 MyWindow::MyWindow(QWidget *parent):
@@ -135,7 +33,9 @@ MyWindow::MyWindow(QWidget *parent):
 {
     ui->setupUi(this);
 
-    capWebcam.open(1);
+    ui->label_6->hide();
+
+    capWebcam.open(0);
     if(capWebcam.isOpened() == false)
     {
         return;
@@ -181,18 +81,23 @@ arduino = new QSerialPort;
     {
         //open and configure the serial port
         arduino->setPortName(arduino_port_name);
-        arduino->open(QSerialPort::WriteOnly);
+        arduino->open(QSerialPort::ReadWrite);
         arduino->setBaudRate(QSerialPort::Baud9600);
         arduino->setDataBits(QSerialPort::Data8);
         arduino->setParity(QSerialPort::NoParity);
         arduino->setStopBits(QSerialPort::OneStop);
         arduino->setFlowControl(QSerialPort::NoFlowControl);
+
     }
     else
     {
         //give error message
         QMessageBox::warning(this,"Port error","Couldn't find the Arduino!");
     }
+
+
+    connect(arduino,SIGNAL(readyRead()),this,SLOT(serialReceived()));
+
 }
 
 MyWindow::~MyWindow()
@@ -203,7 +108,6 @@ MyWindow::~MyWindow()
     }
     delete ui;
     capWebcam.release();
-    videorecording.release();
 
 }
 
@@ -248,6 +152,95 @@ void MyWindow::capt()
 
     ui->label->setPixmap(QPixmap::fromImage(qimg));
 
+}
+
+void captureFunc(Mat *frame, VideoCapture *capture){
+  //loop infinitely
+  for(;;){
+        //capture from webcame to Mat frame
+        (*capture) >> (*frame);
+
+    }
+}
+
+void capture_image(boost::barrier& cur_barier, VideoCapture capWebcam)
+{
+    time_duration td, td1;
+    ptime nextFrameTimestamp, currentFrameTimestamp, initialLoopTimestamp, finalLoopTimestamp;
+    int delayFound;
+
+    // set framerate to record and capture at
+    int framerate = 120;
+
+    // Get the properties from the camera
+    double width = capWebcam.get(CV_CAP_PROP_FRAME_WIDTH);
+    double height = capWebcam.get(CV_CAP_PROP_FRAME_HEIGHT);
+
+    // Create a matrix to keep the retrieved frame
+    Mat frame;
+
+    // Create the video writer
+    VideoWriter video("capture.avi",CV_FOURCC('D','I','V','X'), framerate, cvSize(640,480) );
+
+    // initialize initial timestamps
+    nextFrameTimestamp = microsec_clock::local_time();
+    currentFrameTimestamp = nextFrameTimestamp;
+    td = (currentFrameTimestamp - nextFrameTimestamp);
+
+    // start thread to begin capture and populate Mat frame
+    boost::thread captureThread(captureFunc, &frame, &capWebcam);
+
+    int i=0;
+    for(;;)
+    {
+
+        // wait for X microseconds until 1second/framerate time has passed after previous frame write
+        while(td.total_microseconds() < 1000000/framerate)
+        {
+        //determine current elapsed time
+            currentFrameTimestamp = microsec_clock::local_time();
+            td = (currentFrameTimestamp - nextFrameTimestamp);
+        }
+
+        //determine time at start of write
+        initialLoopTimestamp = microsec_clock::local_time();
+
+        if((frame.rows && frame.cols))
+        {
+            std::ostringstream strs;
+            strs << i;
+            std::string str = strs.str();
+            putText(frame, strs.str() , cvPoint(100,100),FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200,255,250), 1, CV_AA);
+            waitKey(1) && 0xFF;
+            i++;
+        }
+
+        // Save frame to video
+        video << frame;
+        //MyWindow obj;
+        //obj.ui->label_5->setText("recording");
+
+        // add 1second/framerate time for next loop pause
+        nextFrameTimestamp = nextFrameTimestamp + microsec(1000000/framerate);
+
+        // reset time_duration so while loop engages
+        td = (currentFrameTimestamp - nextFrameTimestamp);
+
+        //determine and print out delay in ms, should be less than 1000/FPS
+        //occasionally, if delay is larger than said value, correction will occur
+        //if delay is consistently larger than said value, then CPU is not powerful
+        // enough to capture/decompress/record/compress that fast.
+        finalLoopTimestamp = microsec_clock::local_time();
+        td1 = (finalLoopTimestamp - initialLoopTimestamp);
+        delayFound = td1.total_milliseconds();
+        //cout << delayFound << endl;
+
+        //output will be in following format
+        //[TIMESTAMP OF PREVIOUS FRAME] [TIMESTAMP OF NEW FRAME] [TIME DELAY OF WRITING]
+
+    }
+
+    // Exit
 }
 
 
@@ -532,9 +525,68 @@ void MyWindow::on_pushButton_22_clicked()
 
 void MyWindow::on_pushButton_25_clicked()
 {
+
     if(arduino->isWritable())
     {
+        degree = 23;
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("50");
+        arduino->write("\n");
 
+    }
+    else
+    {
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+    }
+}
+
+void MyWindow::on_pushButton_26_clicked()
+{
+    degree = 13;
+    if(arduino->isWritable())
+    {
+        arduino->write("s");
+        arduino->write(",");
+        arduino->write("22");
+        arduino->write("\n");
+
+    }
+    else
+    {
+        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+    }
+}
+
+void MyWindow::serialReceived()
+{
+    //qDebug()<<"received";
+    inByteArray = arduino->read(3);
+    QString temp = QString::fromStdString(inByteArray.toStdString());
+    int qarray = temp.toInt();
+    qDebug()<<qarray;
+    if(qarray>1)
+    {
+        ang = ((degree + 1 )*15);    // we will be re-drawing each time for all meridians. This is due to the refresh-methodology on which processing operates.
+        float rad = qDegreesToRadians(ang);
+        float multipler = 25 + (qarray - 2)*22 ;
+        int x = int(1090.00 + qCos(rad)* multipler);
+        int y = int(190.00  - qSin(rad)* multipler);
+        ui->label_6->show();
+        ui->label_6->move(x,y);
+    }
+    else
+    {
+        ui->label_6->hide();
+    }
+
+}
+
+void MyWindow::on_pushButton_39_clicked()
+{
+    degree = 0;
+    if(arduino->isWritable())
+    {
         arduino->write("s");
         arduino->write(",");
         arduino->write("48");
@@ -546,24 +598,9 @@ void MyWindow::on_pushButton_25_clicked()
     }
 }
 
-void MyWindow::on_pushButton_26_clicked()
+void MyWindow::on_pushButton_38_clicked()
 {
-    if(arduino->isWritable())
-    {
-        arduino->write("s");
-        arduino->write(",");
-        arduino->write("37");
-        arduino->write("\n");
-
-    }
-    else
-    {
-        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
-    }
-}
-
-void MyWindow::on_pushButton_39_clicked()
-{
+    degree = 1;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -577,8 +614,9 @@ void MyWindow::on_pushButton_39_clicked()
     }
 }
 
-void MyWindow::on_pushButton_38_clicked()
+void MyWindow::on_pushButton_37_clicked()
 {
+    degree = 2;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -592,8 +630,9 @@ void MyWindow::on_pushButton_38_clicked()
     }
 }
 
-void MyWindow::on_pushButton_37_clicked()
+void MyWindow::on_pushButton_36_clicked()
 {
+    degree = 3;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -607,8 +646,9 @@ void MyWindow::on_pushButton_37_clicked()
     }
 }
 
-void MyWindow::on_pushButton_36_clicked()
+void MyWindow::on_pushButton_35_clicked()
 {
+    degree = 4;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -622,8 +662,9 @@ void MyWindow::on_pushButton_36_clicked()
     }
 }
 
-void MyWindow::on_pushButton_35_clicked()
+void MyWindow::on_pushButton_34_clicked()
 {
+    degree = 5;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -637,8 +678,9 @@ void MyWindow::on_pushButton_35_clicked()
     }
 }
 
-void MyWindow::on_pushButton_34_clicked()
+void MyWindow::on_pushButton_33_clicked()
 {
+    degree = 6;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -652,23 +694,27 @@ void MyWindow::on_pushButton_34_clicked()
     }
 }
 
-void MyWindow::on_pushButton_33_clicked()
+void MyWindow::on_pushButton_32_clicked()
 {
+    degree = 7;
     if(arduino->isWritable())
     {
         arduino->write("s");
         arduino->write(",");
         arduino->write("34");
         arduino->write("\n");
+
     }
     else
     {
         ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+
     }
 }
 
-void MyWindow::on_pushButton_32_clicked()
+void MyWindow::on_pushButton_31_clicked()
 {
+    degree = 8;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -682,8 +728,9 @@ void MyWindow::on_pushButton_32_clicked()
     }
 }
 
-void MyWindow::on_pushButton_31_clicked()
+void MyWindow::on_pushButton_30_clicked()
 {
+    degree = 9;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -697,8 +744,9 @@ void MyWindow::on_pushButton_31_clicked()
     }
 }
 
-void MyWindow::on_pushButton_30_clicked()
+void MyWindow::on_pushButton_29_clicked()
 {
+    degree = 10;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -712,8 +760,9 @@ void MyWindow::on_pushButton_30_clicked()
     }
 }
 
-void MyWindow::on_pushButton_29_clicked()
+void MyWindow::on_pushButton_28_clicked()
 {
+    degree = 11;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -727,8 +776,9 @@ void MyWindow::on_pushButton_29_clicked()
     }
 }
 
-void MyWindow::on_pushButton_28_clicked()
+void MyWindow::on_pushButton_27_clicked()
 {
+    degree = 12;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -742,13 +792,14 @@ void MyWindow::on_pushButton_28_clicked()
     }
 }
 
-void MyWindow::on_pushButton_27_clicked()
+void MyWindow::on_pushButton_48_clicked()
 {
+    degree = 14;
     if(arduino->isWritable())
     {
         arduino->write("s");
         arduino->write(",");
-        arduino->write("22");
+        arduino->write("37");
         arduino->write("\n");
     }
     else
@@ -757,8 +808,9 @@ void MyWindow::on_pushButton_27_clicked()
     }
 }
 
-void MyWindow::on_pushButton_48_clicked()
+void MyWindow::on_pushButton_47_clicked()
 {
+    degree = 15;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -772,8 +824,9 @@ void MyWindow::on_pushButton_48_clicked()
     }
 }
 
-void MyWindow::on_pushButton_47_clicked()
+void MyWindow::on_pushButton_46_clicked()
 {
+    degree = 16;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -787,8 +840,9 @@ void MyWindow::on_pushButton_47_clicked()
     }
 }
 
-void MyWindow::on_pushButton_46_clicked()
+void MyWindow::on_pushButton_45_clicked()
 {
+    degree = 17;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -802,10 +856,12 @@ void MyWindow::on_pushButton_46_clicked()
     }
 }
 
-void MyWindow::on_pushButton_45_clicked()
+void MyWindow::on_pushButton_44_clicked()
 {
+      degree = 18;
     if(arduino->isWritable())
     {
+
         arduino->write("s");
         arduino->write(",");
         arduino->write("29");
@@ -817,8 +873,9 @@ void MyWindow::on_pushButton_45_clicked()
     }
 }
 
-void MyWindow::on_pushButton_44_clicked()
+void MyWindow::on_pushButton_43_clicked()
 {
+    degree = 19;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -832,8 +889,9 @@ void MyWindow::on_pushButton_44_clicked()
     }
 }
 
-void MyWindow::on_pushButton_43_clicked()
+void MyWindow::on_pushButton_42_clicked()
 {
+    degree = 20;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -847,8 +905,9 @@ void MyWindow::on_pushButton_43_clicked()
     }
 }
 
-void MyWindow::on_pushButton_42_clicked()
+void MyWindow::on_pushButton_41_clicked()
 {
+    degree = 21;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -862,8 +921,9 @@ void MyWindow::on_pushButton_42_clicked()
     }
 }
 
-void MyWindow::on_pushButton_41_clicked()
+void MyWindow::on_pushButton_40_clicked()
 {
+    degree = 22;
     if(arduino->isWritable())
     {
         arduino->write("s");
@@ -877,18 +937,11 @@ void MyWindow::on_pushButton_41_clicked()
     }
 }
 
-void MyWindow::on_pushButton_40_clicked()
+void MyWindow::keyPressEvent(QKeyEvent *event)
 {
-    if(arduino->isWritable())
+    if(event->key() == Qt::Key_Space)
     {
-        arduino->write("s");
-        arduino->write(",");
-        arduino->write("50");
-        arduino->write("\n");
-    }
-    else
-    {
-        ui->label_5->setText("Couldn't write to arduino! Please reconnect.");
+       on_pushButton_49_clicked();
     }
 }
 

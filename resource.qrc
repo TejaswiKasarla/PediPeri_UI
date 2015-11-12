@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/images">
         <file>buttonm.png</file>
+        <file>perimeter4.png</file>
+        <file>blue.png</file>
     </qresource>
 </RCC>
