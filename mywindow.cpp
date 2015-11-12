@@ -12,14 +12,8 @@
 #include <opencv/highgui.h>
 
 #include <boost/thread.hpp>
-#include <boost/thread/barrier.hpp>
-#include <boost/bind.hpp>
-#include <vector>
-#include <sstream>
-#include <boost/lexical_cast.hpp>
 #include "boost/date_time/posix_time/posix_time.hpp"
 
-boost::mutex io_mutex;
 
 using namespace std;
 using namespace boost::posix_time;
@@ -163,7 +157,7 @@ void captureFunc(Mat *frame, VideoCapture *capture){
     }
 }
 
-void capture_image(boost::barrier& cur_barier, VideoCapture capWebcam)
+void capture_image(VideoCapture capWebcam)
 {
     time_duration td, td1;
     ptime nextFrameTimestamp, currentFrameTimestamp, initialLoopTimestamp, finalLoopTimestamp;
@@ -994,6 +988,5 @@ void MyWindow::sendvalues(int value)
 
 void MyWindow::on_pushButton_24_clicked()
 {
-    boost::barrier bar(2);
-    boost::thread thr(boost::bind(&capture_image,boost::ref(bar),boost::ref(capWebcam)));
+    boost::thread thr(capture_image,capWebcam);
 }

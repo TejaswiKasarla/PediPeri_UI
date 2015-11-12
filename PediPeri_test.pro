@@ -25,9 +25,9 @@ HEADERS  += pediperi.h \
 FORMS    += pediperi.ui \
     mywindow.ui
 
-INCLUDEPATH += C:/boost_1_59_0/
-LIBS += C:/boost_1_59_0/stage/lib/libboost_thread-mgw51-mt-1_59.a
-LIBS += C:/boost_1_59_0/stage/lib/libboost_system-mgw51-mt-1_59.a
+INCLUDEPATH += C:/Boost/include/boost-1_59
+LIBS += C:/Boost/lib/libboost_system-mgw51-mt-1_59.dll
+LIBS += C:/Boost/lib/libboost_thread-mgw51-mt-1_59.dll
 
 INCLUDEPATH += C:/opencv/sources/build_mingw/install/include
 LIBS += -L"C:/opencv/sources/build_mingw/install/x64/mingw/bin"
